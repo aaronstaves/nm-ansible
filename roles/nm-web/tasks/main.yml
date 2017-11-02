@@ -43,7 +43,7 @@
 - name: restart nginx
   service:
     name: nginx
-    state: started
+    state: restarted
   become: True
   tags:
     - nm-web

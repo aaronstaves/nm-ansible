@@ -1,4 +1,7 @@
 {
   "name": "nm-demo-api",
-  "script": "dist/index.js"
+  "script": "dist/index.js",
+  "env": {
+    "PORT": 3002
+  }
 }
