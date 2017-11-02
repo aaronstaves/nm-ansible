@@ -23,3 +23,8 @@ ansible-playbook nm-web -e env=prod
   - Pushes code to server
   - Sets up nginx config
   - Restarts Server
+
+## Related Project
+[nm-server](https://github.com/aaronstaves/nm-server) - backend server used to host [The TVDB API](https://api.thetvdb.com/swagger)
+
+[nm-web](https://github.com/aaronstaves/nm-web) - frontend VueJS app used to access nm-server

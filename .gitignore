@@ -1,3 +1,4 @@
 secrets.yml
+roles/nm-server/files/api_key_config.json
 *.swp
 *.swo
