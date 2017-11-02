@@ -1,0 +1,41 @@
+---
+
+#- name: building nm-web
+#  hosts: "localhost"
+#  tasks:
+#    - name: checkout nm-web
+#      git:
+#        repo: "https://bitbucket.org/aaronstaves/nm-demo/"
+#        dest: "/tmp{{ web_toplevel_dir }}"
+#        update: True
+#      ignore_errors: True
+#      tags:
+#        - nm-web
+#
+#    - name: build nm-web deps
+#      command: "yarn install"
+#      args:
+#        chdir: "/tmp/{{ web_toplevel_dir }}"
+#      tags:
+#        - nm-web
+#
+#    - name: build nm-web
+#      command: "npm run build"
+#      args:
+#        chdir: "/tmp/{{ web_toplevel_dir }}"
+#      tags:
+#        - nm-web
+
+
+
+- name: deploying nm-web
+  hosts: "{{ env }}-nm-server"
+  gather_facts: True
+  environment:
+    NVM_DIR: "{{ nvm.dir }}"
+    PATH: "{{ nvm.path }}:{{ ansible_env.PATH }}"
+  vars_files:
+    - secrets.yml
+  roles:
+    - role: nm-web
+

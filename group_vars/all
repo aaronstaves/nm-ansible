@@ -1,0 +1,25 @@
+---
+# typically specified on command line
+env: null
+
+# install info
+install_dir: /opt
+server_toplevel_dir: "{{ install_dir }}/nm-server"
+web_toplevel_dir: "{{ install_dir }}/nm-web"
+
+# Node version
+node:
+  version: "8.5.0"
+
+# NVM
+nvm:
+  dir: "/home/{{ account.user.name }}/.nvm"
+  path: "/home/{{ account.user.name }}/.nvm/versions/node/v{{ node.version }}/bin"
+  
+# User accounts that are expected to be configured
+account:
+  group:
+    name: astaves
+  user:
+    name: astaves
+

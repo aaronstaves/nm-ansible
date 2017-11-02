@@ -1,0 +1,8 @@
+---
+nodejs_key: nodesource.gpg.key
+nodejs_apt_list: /etc/apt/sources.list.d/nodesource.list
+nodejs_packages:
+  - nodejs
+npm_packages:
+  - pm2
+  - yarn

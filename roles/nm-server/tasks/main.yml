@@ -1,0 +1,98 @@
+---
+
+# create a directory if it doesn't exist
+- name: "create server dir at {{ server_toplevel_dir }}"
+  file:
+    path: "{{ server_toplevel_dir }}"
+    state: directory
+    owner: "{{ account.user.name }}"
+    group: "{{ account.group.name }}"
+    mode: 0755
+  become: True
+  tags:
+    - nm-server
+
+- name: checkout server repo
+  git:
+    repo: "https://aaronstaves@bitbucket.org/aaronstaves/nm-demo-app.git"
+    dest: "{{ server_toplevel_dir }}"
+    update: True
+  ignore_errors: True
+  tags:
+    - nm-server
+
+- name: copy over API key
+  copy:
+    src: api_key_config.json
+    dest: "{{ server_toplevel_dir }}/config/default.json"
+  tags:
+    - nm-server
+
+- name: install server node module deps
+  command: "yarn install"
+  args:
+    chdir: "{{ server_toplevel_dir }}"
+  become: True
+  become_user: "{{ account.user.name }}"
+  tags:
+    - nm-server
+
+- name: building app
+  command: "npm run build"
+  args:
+    chdir: "{{ server_toplevel_dir }}"
+  tags:
+    - nm-server
+
+- name: copy pm2 config
+  copy:
+    src: "nm-server.json"
+    dest: "{{ server_toplevel_dir }}"
+    owner: "{{ account.user.name }}"
+    group: "{{ account.group.name }}"
+  tags:
+    - nm-server
+
+- name: stop old proc if running 
+  command: "pm2 delete nm-server.json"
+  args:
+    chdir: "{{ server_toplevel_dir }}"
+  tags:
+    - nm-server
+
+- name: start server
+  command: "pm2 start nm-server.json"
+  args:
+    chdir: "{{ server_toplevel_dir }}"
+  tags:
+    - nm-server
+
+- name: copy nginx config
+  copy:
+    src: nm-api.aarons.io
+    dest: /etc/nginx/sites-available/nm-api.aarons.io
+  become: True
+  tags:
+    - nm-server
+
+- name: symlink nginx config
+  file:
+    src: /etc/nginx/sites-available/nm-api.aarons.io
+    dest: /etc/nginx/sites-enabled/nm-api.aarons.io
+    state: link
+  become: True
+  tags:
+    - nm-server
+
+# Example action to start service httpd, if not running
+- name: restart nginx
+  service:
+    name: nginx
+    state: started
+  become: True
+  tags:
+    - nm-server
+
+
+
+

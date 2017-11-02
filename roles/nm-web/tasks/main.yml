@@ -1,0 +1,53 @@
+---
+
+# create a directory if it doesn't exist
+- name: "create web dir at {{ web_toplevel_dir }}"
+  file:
+    path: "{{ web_toplevel_dir }}"
+    state: directory
+    owner: "{{ account.user.name }}"
+    group: "{{ account.group.name }}"
+    mode: 0755
+  become: True
+  tags:
+    - nm-web
+
+- name: copy files over
+  copy:
+    src: "/tmp/{{ web_toplevel_dir }}/dist/"
+    dest: "{{ web_toplevel_dir }}"
+    owner: "{{ account.user.name }}"
+    group: "{{ account.group.name }}"
+  become: True
+  tags:
+    - nm-web
+
+- name: copy nginx config
+  copy:
+    src: nm-web.aarons.io
+    dest: /etc/nginx/sites-available/nm-demo.aarons.io
+  become: True
+  tags:
+    - nm-web
+
+- name: symlink nginx config
+  file:
+    src: /etc/nginx/sites-available/nm-demo.aarons.io
+    dest: /etc/nginx/sites-enabled/nm-demo.aarons.io
+    state: link
+  become: True
+  tags:
+    - nm-web
+
+# Example action to start service httpd, if not running
+- name: restart nginx
+  service:
+    name: nginx
+    state: started
+  become: True
+  tags:
+    - nm-web
+
+
+
+

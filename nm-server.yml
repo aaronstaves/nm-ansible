@@ -1,0 +1,13 @@
+---
+
+- name: deploying nm-server
+  hosts: "{{ env }}-nm-server"
+  gather_facts: True
+  environment:
+    NVM_DIR: "{{ nvm.dir }}"
+    PATH: "{{ nvm.path }}:{{ ansible_env.PATH }}"
+  vars_files:
+    - secrets.yml
+  roles:
+    - role: nm-server
+
